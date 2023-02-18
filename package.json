@@ -1,0 +1,21 @@
+{
+  "name": "chatgpt-whatsapp",
+  "version": "1.0.0",
+  "description": "An OpenAI ChatGPT WhatsApp Bot, but uses Bailey.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "npx vite-node src/index.ts"
+  },
+  "author": "fathonix",
+  "license": "MIT",
+  "dependencies": {
+    "@adiwajshing/baileys": "^5.0.0",
+    "@adiwajshing/keyed-db": "^0.2.4",
+    "@hapi/boom": "^10.0.1",
+    "chatgpt": "^4.4.1",
+    "dotenv": "^16.0.3",
+    "pino": "^8.10.0",
+    "qrcode-terminal": "^0.12.0",
+    "vite-node": "^0.28.5"
+  }
+}
