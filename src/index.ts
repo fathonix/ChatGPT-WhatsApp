@@ -2,6 +2,7 @@ import { Boom } from "@hapi/boom"
 const process = require("process")
 import makeWASocket, { AnyMessageContent, delay, DisconnectReason, fetchLatestBaileysVersion, makeCacheableSignalKeyStore, makeInMemoryStore, useMultiFileAuthState } from "@adiwajshing/baileys"
 import { ChatGPTAPI, ChatMessage } from "chatgpt"
+import * as logr from "./utils/logger"
 import P from "pino"
 
 // Environment variables
@@ -35,7 +36,7 @@ const startSock = async() => {
 	const { state, saveCreds } = await useMultiFileAuthState("baileys_auth_info")
 	// fetch latest version of WA Web
 	const { version, isLatest } = await fetchLatestBaileysVersion()
-	console.log(`Using WhatsApp v${version.join(".")}, isLatest: ${isLatest}`)
+	logr.stdout(`Using WhatsApp v${version.join(".")}, isLatest: ${isLatest}`)
 
 	const sock = makeWASocket({
 		version,
@@ -87,14 +88,14 @@ const startSock = async() => {
 				if(connection === "close") {
 					// reconnect if not logged out
 					if((lastDisconnect?.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut) {
-						console.log("Connection is lost! Trying to reconnect...")
+						logr.stdout("Connection is lost! Trying to reconnect...")
 						startSock()
 					} else {
-						console.log("Connection closed. You are logged out.")
+						logr.stdout("Connection closed. You are logged out.")
 					}
 				}
 
-				console.log("connection update", update)
+				logr.stdout("connection update", update)
 			}
 
 			// credentials updated -- save them
@@ -136,13 +137,13 @@ const handleMessage = async (jid: any, prompt: any) => {
         const lastConversation = conversations[jid]
 
         // Add the message to the conversation
-        console.log(`Received prompt from ${jid}:`, prompt)
+        logr.stdout(`Received prompt from ${jid}:`, prompt)
 
         const start = Date.now()
         let response: ChatMessage = await api.sendMessage(prompt, lastConversation ?? undefined)
         const end = Date.now() - start
 
-        console.log(`Answer to ${jid}:`, response.text)
+        logr.stdout(`Answer to ${jid}:`, response.text)
 
         // Set the conversation
         conversations[jid] = {
@@ -150,12 +151,12 @@ const handleMessage = async (jid: any, prompt: any) => {
             parentMessageId: response.id
         }
 
-        console.log(`ChatGPT took ${end}ms.`)
+        logr.stdout(`ChatGPT took ${end}ms.`)
 		
         // Send the response to the chat
         return response.text + "\n\n" + `*ChatGPT took ${end}ms.*`
     } catch (error: any) {
-        console.error("An error occured", error)
+        logr.stderr("An error occured", error)
         return "An error occured, please contact the administrator."
     }
 }
