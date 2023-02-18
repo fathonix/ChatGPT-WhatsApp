@@ -7,7 +7,7 @@ import P from "pino"
 // Environment variables
 require("dotenv").config()
 
-// Initialize logger
+// Initialize the logger
 const logger = P({ timestamp: () => `, "time": "${new Date().toJSON()}"` }).child({})
 logger.level = process.env.LOGGER_LEVEL ?? "silent"
 
@@ -23,7 +23,7 @@ const api = new ChatGPTAPI({
     apiKey: process.env.OPENAI_API_KEY
 })
 
-// Mapping from number to last conversation id
+// Mapping from number to the last conversation id
 const conversations = {}
 
 // external map to store retry counts of messages when decryption/encryption fails
