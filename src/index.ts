@@ -136,7 +136,7 @@ const handleMessage = async (jid: any, prompt: any) => {
         const lastConversation = conversations[jid]
 
         // Add the message to the conversation
-        console.log(`Received prompt from ${jid}`, prompt)
+        console.log(`Received prompt from ${jid}:`, prompt)
 
         const start = Date.now()
         let response: ChatMessage = await api.sendMessage(prompt, lastConversation ?? undefined)
