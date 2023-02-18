@@ -154,7 +154,11 @@ const handleMessage = async (jid: any, prompt: any) => {
         logr.stdout(`ChatGPT took ${end}ms.`)
 		
         // Send the response to the chat
-        return response.text + "\n\n" + `*ChatGPT took ${end}ms.*`
+		if (process.env.APPEND_TIME == "true") {
+			return response.text + "\n\n" + `*ChatGPT took ${end}ms.*`
+		} else {
+			return response.text
+		}
     } catch (error: any) {
         logr.stderr("An error occured", error)
         return "An error occured, please contact the administrator."
