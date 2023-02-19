@@ -11,6 +11,7 @@ require("dotenv").config()
 // Initialize the logger
 const logger = P({ timestamp: () => `, "time": "${new Date().toJSON()}"` }).child({})
 logger.level = process.env.LOGGER_LEVEL ?? "silent"
+const isLogging = ["debug", "trace", "info"].includes(process.env.LOGGER_LEVEL)
 
 // Prefix check
 const prefixEnabled = process.env.PREFIX_ENABLED == "true"
@@ -109,6 +110,7 @@ const startSock = async() => {
 
 				if(upsert.type === "notify") {
 					for(const msg of upsert.messages) {
+						if (isLogging) console.log("recv message", msg)
 						if (msg.key.fromMe || msg.message?.conversation?.length === 0) continue
 
 						if (prefixEnabled) {
